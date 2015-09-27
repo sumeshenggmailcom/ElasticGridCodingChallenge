@@ -1,0 +1,66 @@
+ //create Angularjs controller
+    var app = angular.module('app', []);//set and get the angular module
+    app.controller('contactController', ['$scope', '$http', contactController]);
+
+    //Angularjs controller method
+    function contactController($scope, $http) {
+
+        //declare variable for mainain ajax load
+        $scope.loading = true;
+        
+        //Get all contact information
+        $http.get('/api/contact/').success(function (data) {
+            $scope.contacts = data;
+            $scope.loading = false;
+        })
+        .error(function () {
+            $scope.error = "An Error has occured while loading contacts!";
+            $scope.loading = false;
+        });        
+
+        //Insert newcontact
+        $scope.savecontact = function () {
+            $scope.loading = true;
+            $http.post('/api/contact/', this.newcontact).success(function (data) {               
+                $scope.addMode = false;
+                $scope.contacts.push(data);
+                $scope.loading = false;
+            }).error(function (data) {
+                $scope.error = "An Error has occured while Adding Newcontact! " + data;
+                $scope.loading = false;
+            });
+        };
+
+        //Edit contact
+        $scope.edit = function () {           
+            $scope.loading = true;
+            var temp = this.contact;  
+            alert(temp);          
+            $http.put('/api/contact/' + temp.id, temp).success(function (data) {               
+                temp.editMode = false;
+                $scope.loading = false;
+            }).error(function (data) {
+                $scope.error = "An Error has occured while editing contact! " + data;
+                $scope.loading = false;
+            });
+        };
+
+       //Delete contact
+        $scope.delete = function () {
+            $scope.loading = true;
+            var id = this.contact.id;
+            $http.delete('/api/contact/' + id).success(function (data) {                
+                $.each($scope.contacts, function (i) {
+                    if ($scope.contacts[i].id === id) {
+                        $scope.contacts.splice(i, 1);
+                        return false;
+                    }
+                });
+                $scope.loading = false;
+            }).error(function (data) {
+                $scope.error = "An Error has occured while deleting contact! " + data;
+                $scope.loading = false;
+            });
+        };
+
+    }

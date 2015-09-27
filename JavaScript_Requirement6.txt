@@ -1,0 +1,25 @@
+﻿<!DOCTYPE html>
+<html>
+<body>
+
+<p>Click the button to alert the string with removed HTML.</p>
+
+<button onclick="myFunction()">Try it</button>
+
+<script>
+  String.prototype.stripHtml = function() {  
+    return this.replace(/(<([^>]+)>)/ig,"");
+  };
+  
+  
+function myFunction() {
+    var str ='"1 &lt; 2"';
+    alert(str.stripHtml());
+
+    str ='"<p>Shoplifters of the World<em>Unite</em>!</p>"';    
+    alert(str.stripHtml());
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,57 @@
+--Requirement 9
+--Return the names of all salespeople that have an order with George
+select S.Name
+ from Salesperson S join Orders O  
+ on S.SalespersonID=O.SalespersonID
+ join Customer C
+ on O.CustomerID=C.CustomerID
+ where C.Name = 'George';
+ 
+--Requirement 9
+--Return the names of all salespeople that do not have any order with George 
+select distinct S.Name
+ from Salesperson S join Orders O  
+ on S.SalespersonID=O.SalespersonID
+ join Customer C
+ on O.CustomerID=C.CustomerID
+ where C.Name != 'George';
+ 
+ --Requirement 9
+ --Return the names of salespeople that have 2 or more orders.
+ with list(SalesPersonID, NoOFOrders) as (
+ select O.SalespersonID,Count(O.SalespersonID)Co
+ from Salesperson S join Orders O  
+ on S.SalespersonID=O.SalespersonID
+ group by O.SalespersonID
+ ) 
+ select Name from Salesperson S
+ join list l on S.SalespersonID=l.SalesPersonID
+ where l.NoOFOrders>=2;
+ 
+ --Requirement 10
+ --Return the name of the salesperson with the 3rd highest salary.
+ with SalaryList as(
+ select Name, Salary,rank() over (order by Salary DESC) ranking
+ from Salesperson)
+ Select Name from SalaryList where ranking = 3;
+ 
+ --Requirement 10
+ --Create a new roll­up table BigOrders(where columns are CustomerID,TotalOrderValue), and insert into that table customers whose total Amount across all orders is greater than 1000
+ Create table BigOrders(CustomerID [int], TotalOrderValue[int])
+ go
+ with data as(
+ select O.CustomerID,SUM(O.CostOfUnit*O.NumberOfUnits) totalCost 
+ from Orders O
+ join Customer C on o.CustomerID=C.CustomerID
+ group by O.CustomerID) 
+ insert into BigOrders(CustomerID, TotalOrderValue)
+ select * from  data where totalCost>1000
+ 
+--Requirement 10
+--Return the total Amount of orders for each month, ordered by year, then month (both in descending order)
+ select     MONTH(OrderDate) AS Month 
+            , YEAR(OrderDate) AS Year,SUM(CostOfUnit*NumberOfUnits) AS TotalCost
+ from         [Orders]   
+ group by  MONTH(OrderDate), YEAR(OrderDate)
+ order by  MONTH(OrderDate) desc, YEAR(OrderDate) desc
+ 

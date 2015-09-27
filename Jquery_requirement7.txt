@@ -1,0 +1,16 @@
+//Code Starts
+$(document).ready(function() {
+   $('#NewWin').click(function() {
+     var NWin = window.open($(this).prop('href'), '', 'height=800,width=800');
+     if (window.focus)
+     {
+       NWin.focus();
+     }
+     return false;
+    });
+});​
+//Code Ends
+
+//Code Starts
+<a href="http://google.com/" id="NewWin">Open in New window </a>
+//Code Ends
